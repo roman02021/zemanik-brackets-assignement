@@ -9,7 +9,7 @@ interface Props {
 function Button({ onClick, children, className }: Props) {
     return (
         <button
-            className={`${className} w-8 h-8 flex justify-center items-center p-2 rounded-lg`}
+            className={`${className} bg-blue-500 bg-opacity-25 mh-4 mx-2 w-8 h-8 flex justify-center items-center p-2 rounded-lg`}
             onClick={onClick}
         >
             {children}

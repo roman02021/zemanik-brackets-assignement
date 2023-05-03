@@ -4,15 +4,20 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
+body {
+    @apply bg-gradient-to-r from-slate-900 to-slate-700;
+}
 #root {
     margin: 0;
     @apply text-white;
     @apply m-0;
-    @apply bg-slate-800;
+
     @apply p-6;
     font-family: 'Montserrat', sans-serif;
+    @apply mx-auto;
+    @apply max-w-3xl;
 }
 html,
 #root {
-    @apply h-screen;
+    @apply min-h-screen;
 }

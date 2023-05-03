@@ -88,7 +88,7 @@ function App() {
             <form className="flex justify-center mb-4" onSubmit={handleSearch}>
                 <div className="relative w-fit">
                     <input
-                        className="m-auto sm:flex items-center w-72 space-x-3 px-4 h-12 bg-slate-900 rounded-md hover:bg-opacity-75 focus:bg-opacity-75"
+                        className="m-auto sm:flex items-center w-72 space-x-3 px-4 h-12 bg-blue-500 bg-opacity-20 rounded-md hover:bg-opacity-30 focus:bg-opacity-30"
                         type="text"
                         placeholder="Search"
                         onChange={onSearchTermChange}
@@ -98,9 +98,9 @@ function App() {
             </form>
             <div className="flex justify-center mb-4">
                 <div className="flex flex-col">
-                    Filter by gender
+                    <label htmlFor="genderFilter">Show gender</label>
                     <select
-                        className="w-72 space-x-3 px-4 h-12 bg-slate-900 rounded-md hover:cursor-pointer hover:bg-opacity-75 focus:bg-opacity-75"
+                        className="w-72 space-x-3 px-4 h-12 bg-blue-500 bg-opacity-20 rounded-md hover:cursor-pointer hover:bg-opacity-30 focus:bg-opacity-75"
                         id="genderFilter"
                         onChange={(e) => setGenderFilter(e.currentTarget.value)}
                     >
@@ -117,7 +117,7 @@ function App() {
             )}
 
             {!error && filteredData !== null && (
-                <ul>
+                <ul className="grid grid-cols-2 gap-4">
                     {filteredData.map((character, i) => (
                         <SearchResult
                             key={character.name}
