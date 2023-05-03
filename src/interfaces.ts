@@ -14,10 +14,11 @@ export interface Character {
     created: string;
     edited: string;
     url: string;
+    image?: string;
 }
 export interface ApiResponse {
     count: number;
     next: string | null;
     previous: string | null;
-    results: Character[] | null;
+    results: Character[];
 }
