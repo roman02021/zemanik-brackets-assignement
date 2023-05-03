@@ -6,18 +6,14 @@ interface Props {
     index: number;
 }
 
-function SearchResult(props: Props) {
+function SearchResult({ character, index }: Props) {
     const [showResult, setShowResult] = useState<boolean>(false);
-
-    console.log(props.index);
 
     useEffect(() => {
         setTimeout(() => {
             setShowResult(true);
-        }, 50 * (props.index + 1));
+        }, 50 * (index + 1));
     }, []);
-
-    console.log(showResult);
 
     return (
         <li
@@ -26,10 +22,11 @@ function SearchResult(props: Props) {
             } ${showResult ? 'translate-y-px' : ''}`}
         >
             <img
+                alt={character.name}
                 className="h-24 w-20 object-cover"
-                src={props.character.image}
+                src={character.image}
             ></img>
-            <span className="ml-4 font-semibold">{props.character.name}</span>
+            <span className="ml-4 font-semibold">{character.name}</span>
         </li>
     );
 }

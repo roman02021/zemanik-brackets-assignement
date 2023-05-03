@@ -56,6 +56,7 @@ function Pagination({
 
             {pages.map((page) => (
                 <Button
+                    key={page}
                     className={`${page === currentPage ? 'bg-slate-600' : ''}`}
                     onClick={() => setCurrentPage(page)}
                 >
