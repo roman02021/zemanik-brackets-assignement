@@ -1,10 +1,12 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, FormEventHandler, useEffect, useState } from 'react';
 import './App.css';
 import useFetchData from './hooks/useFetchData';
 import SearchResult from './components/SearchResult';
 import Search from './components/Search';
+import SearchIcon from './assets/SearchIcon';
 import { ApiResponse, Character } from './interfaces';
 import Pagination from './components/Pagination';
+import Loader from './components/Loader';
 
 function App() {
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -16,39 +18,35 @@ function App() {
     const [searchCategory, setSearchCategory] = useState<string>('');
     const [filteredData, setFilteredData] = useState<Character[]>([]);
 
-    const [showOnlyWomen, setShowOnlyWomen] = useState<boolean>(false);
+    const [genderFilter, setGenderFilter] = useState<string>('both');
 
     const { data, isLoading, error } = useFetchData<ApiResponse>(url);
 
-    function handleSearch(e: FormEvent<HTMLInputElement>) {
-        setSearchTerm(e.currentTarget.value);
+    function handleSearch(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setUrl(
+            `${
+                import.meta.env.VITE_API_ROOT
+            }/people?page=1&search=${searchTerm}`
+        );
+        setCurrentPage(1);
     }
 
-    // function showOnlyWomen(e: FormEvent<HTMLInputElement>) {
-    //     if (data !== null && data.results !== null) {
-    //         if (e.currentTarget.checked === true) {
-    //             setFilteredData(
-    //                 data.results.filter(
-    //                     (x) => x.gender.toLowerCase() === 'female'
-    //                 )
-    //             );
-    //         } else {
-    //             setFilteredData(data?.results);
-    //         }
-    //     }
-    // }
-
-    const showLoader = () => <div>Loading</div>;
+    function onSearchTermChange(e: FormEvent<HTMLInputElement>) {
+        setSearchTerm(e.currentTarget.value);
+    }
 
     useEffect(() => {
         if (data !== null) {
             setFilteredData(
                 data.results.filter((x) =>
-                    showOnlyWomen ? x.gender.toLowerCase() === 'female' : x
+                    genderFilter !== 'both'
+                        ? x.gender.toLowerCase() === genderFilter
+                        : x
                 )
             );
         }
-    }, [showOnlyWomen]);
+    }, [genderFilter]);
 
     useEffect(() => {
         if (data !== null && data.results !== null) {
@@ -64,19 +62,18 @@ function App() {
                 };
             });
             data.results = charactersWithImage;
-            setFilteredData(data.results);
+            setFilteredData(
+                data.results.filter((x) =>
+                    genderFilter !== 'both'
+                        ? x.gender.toLowerCase() === genderFilter
+                        : x
+                )
+            );
             setAmountOfPages(Math.round(data.count / 10));
         }
     }, [data]);
 
-    useEffect(() => {
-        setUrl(
-            `${
-                import.meta.env.VITE_API_ROOT
-            }/people?page=1&search=${searchTerm}`
-        );
-        setCurrentPage(1);
-    }, [searchTerm, searchCategory]);
+    console.log(genderFilter);
 
     useEffect(() => {
         setUrl(
@@ -88,23 +85,43 @@ function App() {
 
     return (
         <>
-            <input
-                className="hidden m-auto sm:flex items-center w-72 space-x-3 px-4 h-12 bg-white ring-1 ring-slate-900/10 hover:ring-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm rounded-lg text-slate-400 dark:bg-slate-800 dark:ring-0 dark:text-slate-300 dark:highlight-white/5 dark:hover:bg-slate-700"
-                type="text"
-                onChange={handleSearch}
-            />
-            <label htmlFor="characters">Show only women</label>
-            <input
-                type="checkbox"
-                onChange={(e) => setShowOnlyWomen(e.currentTarget.checked)}
-            />
-            {isLoading && showLoader()}
+            <form className="flex justify-center mb-4" onSubmit={handleSearch}>
+                <div className="relative w-fit">
+                    <input
+                        className="m-auto sm:flex items-center w-72 space-x-3 px-4 h-12 bg-slate-900 rounded-md hover:bg-opacity-75 focus:bg-opacity-75"
+                        type="text"
+                        placeholder="Search"
+                        onChange={onSearchTermChange}
+                    ></input>
+                    <SearchIcon className="absolute right-2 fill-white pointer-events-none top-1/2 -translate-y-1/2" />
+                </div>
+            </form>
+            <div className="flex justify-center mb-4">
+                <div className="flex flex-col">
+                    Filter by gender
+                    <select
+                        className="w-72 space-x-3 px-4 h-12 bg-slate-900 rounded-md hover:cursor-pointer hover:bg-opacity-75 focus:bg-opacity-75"
+                        id="genderFilter"
+                        onChange={(e) => setGenderFilter(e.currentTarget.value)}
+                    >
+                        <option value="both">Both</option>
+                        <option value="male">Men</option>
+                        <option value="female">Women</option>
+                    </select>
+                </div>
+            </div>
+
+            {isLoading && <Loader />}
+            {filteredData.length === 0 && (
+                <div>No results on page {currentPage}</div>
+            )}
 
             {!error && filteredData !== null && (
                 <ul>
-                    {filteredData.map((character) => (
+                    {filteredData.map((character, i) => (
                         <SearchResult
                             key={character.name}
+                            index={i}
                             character={character}
                         />
                     ))}

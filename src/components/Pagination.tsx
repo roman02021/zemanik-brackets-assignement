@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Button from './Button';
+import ChevronLeft from '../assets/ChevronLeft';
+import ChevronRight from '../assets/ChevronRight';
 
 interface Props {
     currentPage: number;
@@ -37,7 +40,6 @@ function Pagination({
             (_, i) => i + leftSiblingIndex
         );
         setPages(pageArray);
-        console.log('YOOO', pageArray);
     }
 
     useEffect(() => {
@@ -45,19 +47,25 @@ function Pagination({
     }, [currentPage, amountOfPages]);
 
     return (
-        <div className="mt-4">
-            {currentPage !== 1 && <button onClick={prevPage}>Prev</button>}
+        <div className="mt-4 flex items-center justify-center">
+            {currentPage !== 1 && (
+                <Button onClick={prevPage}>
+                    <ChevronLeft className="w-6 transition-all h-6 hover:-translate-x-0.5" />
+                </Button>
+            )}
 
             {pages.map((page) => (
-                <button
+                <Button
                     className={`${page === currentPage ? 'bg-slate-600' : ''}`}
                     onClick={() => setCurrentPage(page)}
                 >
                     {page}
-                </button>
+                </Button>
             ))}
             {currentPage !== amountOfPages && (
-                <button onClick={nextPage}>Next</button>
+                <Button onClick={nextPage}>
+                    <ChevronRight className="w-6 transition-all h-6 hover:translate-x-0.5" />
+                </Button>
             )}
         </div>
     );
