@@ -1,10 +1,6 @@
-import React from 'react';
+import { IconProps } from '../interfaces';
 
-interface Props {
-    className?: string;
-}
-
-function SearchIcon({ className }: Props) {
+function SearchIcon({ className }: IconProps) {
     return (
         <svg
             className={className}

@@ -22,3 +22,6 @@ export interface ApiResponse {
     previous: string | null;
     results: Character[];
 }
+export interface IconProps {
+    className: string;
+}
